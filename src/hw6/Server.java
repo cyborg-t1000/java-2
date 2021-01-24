@@ -18,11 +18,21 @@ public class Server {
             socket = server.accept();
             System.out.println("Client connected");
 
-            Scanner sc = new Scanner(socket.getInputStream());
+            Scanner in = new Scanner(socket.getInputStream());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
+            Scanner scKeyboard = new Scanner(System.in);
+
+            new Thread(() -> {
+                while (true) {
+                    String serverMsg = scKeyboard.nextLine();
+                    out.println(serverMsg);
+                }
+
+            }).start();
+
             while (true) {
-                String str = sc.nextLine();
+                String str = in.nextLine();
 
                 if (str.equals("/end")) {
                     System.out.println("client disconnected");
@@ -30,7 +40,6 @@ public class Server {
                 }
 
                 System.out.println("Client: " + str);
-                out.println("ECHO: " + str);
             }
 
         } catch (IOException e) {
